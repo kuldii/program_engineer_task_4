@@ -3,6 +3,7 @@ import streamlit as st
 from PIL import Image
 from transformers import BlipProcessor, BlipForConditionalGeneration
 
+
 def load_image(uploaded_file):
     if uploaded_file is None:
         return None
