@@ -3,6 +3,7 @@ import streamlit as st
 from PIL import Image
 from transformers import BlipProcessor, BlipForConditionalGeneration
 
+
 def load_image(uploaded_file):
     """
     Load and display an image from the uploaded file.
@@ -21,8 +22,12 @@ def load_image(uploaded_file):
         st.write("Image Input : ", uploaded_file.name)
         return Image.open(io.BytesIO(image_data)).convert('RGB')
 
+
 # Initialize the BLIP processor with the pretrained model
-processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-large")
+processor = BlipProcessor.from_pretrained(
+    "Salesforce/blip-image-captioning-large"
+    )
+
 
 @st.cache_resource
 def load_model():
@@ -32,7 +37,10 @@ def load_model():
     Returns:
     BlipForConditionalGeneration: The loaded BLIP model.
     """
-    return BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-large")
+    return BlipForConditionalGeneration.from_pretrained(
+        "Salesforce/blip-image-captioning-large"
+        )
+
 
 # Load the model using the cached function
 model = load_model()
