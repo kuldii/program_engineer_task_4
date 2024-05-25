@@ -23,21 +23,31 @@ def load_image(uploaded_file):
         return Image.open(io.BytesIO(image_data)).convert('RGB')
 
 
+# Initialize the BLIP processor with the pretrained model
+processor = BlipProcessor.from_pretrained(
+    "Salesforce/blip-image-captioning-large"
+    )
+
+
 @st.cache_resource
 def load_model():
     """
     Loads the BLIP image captioning model using caching for efficiency.
 
     Returns:
-        BlipForConditionalGeneration model
+    BlipForConditionalGeneration: The loaded BLIP model.
     """
-    return BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-large")
+    return BlipForConditionalGeneration.from_pretrained(
+        "Salesforce/blip-image-captioning-large"
+        )
 
 
-# Load the BLIP processor and model
-processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-large")
+# Load the model using the cached function
 model = load_model()
+
 # --- Streamlit User Interface ---
+
+# Streamlit application title and team member information
 st.title("Project - Image to Text")
 st.write("""
          #### TEAM MEMBER
@@ -47,16 +57,24 @@ st.write("""
 st.write("""#### Our Project: Image Caption Generator""")
 
 # File uploader and image loading
-uploaded_file = st.file_uploader("Upload Image", type=["jpg", "jpeg", "png"])  # Specify allowed types
+uploaded_file = st.file_uploader(
+    "Upload Image",
+    type=["jpg", "jpeg", "png"]  # Specify allowed types
+    )
+
 raw_image = load_image(uploaded_file)
+
 
 # Caption generation and display
 if st.button("Generate Caption"):
     if raw_image:  # Check if an image is loaded before proceeding
-        with st.spinner("Generating caption..."):  # Add a spinner for visual feedback
+        # Add a spinner for visual feedback
+        with st.spinner("Generating caption..."):
             inputs = processor(raw_image, return_tensors="pt")
             out = model.generate(**inputs, max_new_tokens=1000)
             caption = processor.decode(out[0], skip_special_tokens=True)
-            st.markdown(f"**A picture of** {caption.capitalize().lower()}")  # Nicer formatting
+            # Nicer formatting
+            st.markdown(f"**A picture of** {caption.capitalize().lower()}")
     else:
-        st.warning("Please upload an image.")  # Provide feedback if no image is uploaded
+        # Provide feedback if no image is uploaded
+        st.warning("Please upload an image.")
